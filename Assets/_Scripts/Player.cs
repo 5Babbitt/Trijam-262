@@ -14,29 +14,26 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
 
     //Movment
     [Header("Move Settings")]
-    public Vector2 moveDirection;
-    public Vector2 movement;
-    public Vector2 movementForce;
-    public float moveSpeed;
+    public Vector2 moveInput;
+    public Vector2 moveVector;
+    public float maxSpeed;
+    public float acceleration;
+    public float deceleration;
+
 
     //Dash
+    [Header("Dash Settings")]
     public float dashSpeed;
     public bool dashInAimDirection;
 
-    //Drag
-    public float stopDrag;
-    public float moveDrag;
-
-    public AnimationCurve forceModifier;
-
     //Aiming
     [Header("Aim Settings")]
-    public Vector2 mousePos;
-    public float lookAngle;
     public Transform target;
+    public Camera cam;
+    public Vector2 mousePos;
     public Vector2 targetDirection;
     public float targetDistance = 7f;
-    public Camera cam;
+    public float lookAngle;
 
     //Firing
     [Header("Fire Settings")]
@@ -54,8 +51,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     float timeSinceFired;
 
     //Events
-    [Header("Events")]
-    public GameEvent playerPositionEvent;
+
     
     protected override void Awake()
     {
@@ -74,17 +70,10 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
 
     protected override void Update()
     {
-        // Movement
-        movementForce = rb.mass * movement * forceModifier.Evaluate(Vector2.Dot(rb.velocity.normalized, moveDirection.normalized));
+        CalculateMovement();
+        CalculateAim();
 
-        rb.AddForce(movementForce);
-
-        // Aim
-        Vector2 _mousePos = cam.ScreenToWorldPoint(mousePos);
-
-        targetDirection = (_mousePos - rb.position).normalized;
-        target.position = Vector2.Distance(rb.position, _mousePos) < targetDistance ? _mousePos : rb.position + (targetDirection * targetDistance);
-
+        // Timers
         timeSinceDashed += Time.deltaTime;
         timeSinceFired += Time.deltaTime;
 
@@ -94,11 +83,9 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     private void FixedUpdate()
     {
         // Movment
-        rb.AddForce(movementForce * rb.drag);
-
-        rb.drag = (moveDirection == Vector2.zero) ? stopDrag : moveDrag;
+        rb.AddForce(moveVector);
         
-        float lookAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90;
+        // Aiming
         rb.MoveRotation(lookAngle);
     }
 
@@ -110,12 +97,34 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
         }
     }
 
+    void CalculateMovement()
+    {
+        Vector2 targetSpeed = moveInput.normalized * maxSpeed;
+        float accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+        Vector2 speedDifference = targetSpeed - rb.velocity.sqrMagnitude;
+        Vector2 movement = speedDifference * accelerationRate;
+
+        Debug.Log($"Target Speed:       {targetSpeed}");
+        Debug.Log($"Acceleration Rate:  {accelerationRate}");
+        Debug.Log($"Speed Difference:   {speedDifference}");
+        Debug.Log($"Movement:           {movement}");
+
+        moveVector = movement * moveInput;
+    }
+
+    void CalculateAim()
+    {
+        Vector2 _mousePos = cam.ScreenToWorldPoint(mousePos);
+
+        targetDirection = (_mousePos - rb.position).normalized;
+        target.position = Vector2.Distance(rb.position, _mousePos) < targetDistance ? _mousePos : rb.position + (targetDirection * targetDistance);
+        lookAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90;
+    }
+
     // Input Methods
     void OnMove(InputValue inputValue) 
     {
-        moveDirection = inputValue.Get<Vector2>();
-
-        movement = moveDirection * moveSpeed;
+        moveInput = inputValue.Get<Vector2>();
     }
 
     void OnFire(InputValue inputValue)
@@ -137,7 +146,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     {
         if (timeSinceDashed < dashCooldown) return;
 
-        var _dashDirection = (dashInAimDirection) ? targetDirection : moveDirection;
+        var _dashDirection = (dashInAimDirection) ? targetDirection : moveInput;
 
         rb.AddForce(rb.mass * dashSpeed * _dashDirection, ForceMode2D.Impulse);
         timeSinceDashed = 0;

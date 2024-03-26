@@ -166,10 +166,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  moveDirection: {x: 0, y: 0}
-  movement: {x: 0, y: 0}
-  moveSpeed: 9
-  dashSpeed: 15
+  moveInput: {x: 0, y: 0}
+  maxSpeed: 0
+  acceleration: 0
+  deceleration: 0
+  dashSpeed: 9
   dashInAimDirection: 0
   mousePos: {x: 0, y: 0}
   lookAngle: 0
@@ -197,7 +198,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 2
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}

@@ -18,7 +18,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     {
         base.Awake();
 
-
+        health = maxHealth;
     }
 
     protected override void Update()

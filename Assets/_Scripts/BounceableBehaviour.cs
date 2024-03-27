@@ -21,6 +21,6 @@ public class BounceableBehaviour : MonoBehaviour
     {
         Vector2 newDirection = Vector2.Reflect(lastVelocity.normalized, collision.contacts[0].normal);
 
-        rb.velocity = newDirection * _speed;
+        rb.AddForce(_speed * rb.mass * newDirection, ForceMode2D.Impulse);
     }
 }

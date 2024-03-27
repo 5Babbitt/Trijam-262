@@ -21,7 +21,12 @@ public class Projectile : BounceableBehaviour, IDamageable, IElementEffectable
         }
 
         var damageableObject = collision.collider.gameObject?.GetComponent<IDamageable>();
-        var elementEffectableObject = collision.collider.gameObject?.GetComponent<IElementEffectable>();
+        var effectedObject = collision.collider.gameObject?.GetComponent<IElementEffectable>();
+
+        if (effectedObject != null)
+        {
+            effectedObject.TakeElementEffect(element);
+        }
 
         if (damageableObject != null)
         {
@@ -70,5 +75,19 @@ public class Projectile : BounceableBehaviour, IDamageable, IElementEffectable
     public void TakeElementEffect(Elements _element)
     {
         element = _element;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+
+        switch (_element) 
+        {
+            case Elements.fire:
+                spriteRenderer.color = Color.red;
+                break;
+            case Elements.lightning: 
+                spriteRenderer.color = Color.magenta; 
+                break;
+            case Elements.slime:
+                spriteRenderer.color = Color.green;
+                break;
+        }
     }
 }

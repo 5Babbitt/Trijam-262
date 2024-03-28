@@ -36,7 +36,6 @@ public class PlayerMovement : BounceableBehaviour
     private void Start()
     {
         dashRefillCoroutine = StartCoroutine(DashRefill());
-        //dashCount = maxConsecutiveDashes;
     }
 
     protected override void Update()

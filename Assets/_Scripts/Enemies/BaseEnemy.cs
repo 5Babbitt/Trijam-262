@@ -1,3 +1,4 @@
+using FiveBabbittGames;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,12 +14,20 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
     public int health;
     public int damage;
 
+    public GameEvent deathEvent;
+
     protected override void Awake()
     {
         base.Awake();
 
         agent = GetComponent<NavMeshAgent>();
         agent.updateUpAxis = false;
+    }
+
+    protected virtual void Attack(IDamageable damageable)
+    {
+        damageable.Damage(damage);
+
     }
 
     public void Damage(int _damage)
@@ -31,6 +40,7 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     public void Death()
     {
+        deathEvent.Raise(this, null);
         Destroy(gameObject);
     }
 

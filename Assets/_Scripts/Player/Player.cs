@@ -12,7 +12,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     private int health;
 
     //Events
-
+    public GameEvent deathEvent;
 
     protected override void Awake()
     {
@@ -31,7 +31,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     public void Damage(int _damage)
     {
         health -= _damage;
-        Debug.Log("Took Damage");
+        Debug.Log($"Health = {health}");
 
         if (health < 0)
             Death();
@@ -40,6 +40,7 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
     public void Death()
     {
         // Game Over
+        deathEvent.Raise(this, null);
     }
 
     public void TakeElementEffect(Elements _element)

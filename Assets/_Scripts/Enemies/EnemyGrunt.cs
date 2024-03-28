@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyGrunt : BaseEnemy
@@ -29,9 +27,14 @@ public class EnemyGrunt : BaseEnemy
         agent.speed = speed;
     }
 
-    void Attack(IDamageable damageable)
+    protected override void Attack(IDamageable damageable)
     {
         damageable.Damage(damage);
         timeSinceAttacked = 0;
+    }
+
+    void RotateInMoveDirection()
+    {
+
     }
 }

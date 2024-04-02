@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class EnemyGrunt : BaseEnemy
 {
+    // Added State machine about 
 
     [Header("Grunt Settings")]
     public float speed;

@@ -60,6 +60,8 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
     {
         switch (_element)
         {
+            case Elements.none:
+                break;
             case Elements.fire:
 
                 break;

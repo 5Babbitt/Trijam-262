@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1346925241401264703}
   - component: {fileID: 5171363889736272613}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 6644490057265461788}
   - component: {fileID: 2530043532625326424}
   - component: {fileID: 329239112144631952}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Entity
   m_Icon: {fileID: 0}
@@ -285,7 +285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4987417962403913751}
   - component: {fileID: 6546443727830651060}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Look
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +368,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5073273470172830771}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1390457828385992554}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Aim Target
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -431,7 +431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6470508203005069377}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Fire Point
   m_TagString: Untagged
   m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}

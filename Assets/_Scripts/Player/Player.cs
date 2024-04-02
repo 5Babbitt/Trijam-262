@@ -1,6 +1,4 @@
 using UnityEngine;
-using Cinemachine;
-using System;
 using FiveBabbittGames;
 
 /// <summary>

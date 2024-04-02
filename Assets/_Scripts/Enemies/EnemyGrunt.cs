@@ -1,20 +1,26 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// EnemyGrunt
+/// </summary>
 public class EnemyGrunt : BaseEnemy
 {
 
     [Header("Grunt Settings")]
     public float speed;
-    public Transform attackPoint;
+    public float stopDistance;
     public float attackRadius;
     public float attackCooldown;
+    public Transform attackPoint;
+    public LayerMask attackLayers;
 
     private float timeSinceAttacked;
 
     private void Start()
     {
         agent.speed = speed;
+        agent.stoppingDistance = stopDistance;
     }
 
     protected override void Update()
@@ -22,10 +28,10 @@ public class EnemyGrunt : BaseEnemy
         agent.SetDestination(player.position);
 
         base.Update(); 
-        
-        RotateInMoveDirection();
 
         timeSinceAttacked += Time.deltaTime;
+
+        if (CanAttack()) Attack(GetDamageableObject());
     }
 
     protected override void Attack(IDamageable damageable)
@@ -34,17 +40,28 @@ public class EnemyGrunt : BaseEnemy
         timeSinceAttacked = 0;
     }
 
-    void RotateInMoveDirection()
+    private bool CanAttack()
     {
-        if (agent.velocity == Vector3.zero)
-            return;
-   
-        Vector2 moveDirection = new Vector2(agent.velocity.x, agent.velocity.y);
+        bool playerInRange = Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayers);
+        bool timeToAttack = (timeSinceAttacked > attackCooldown);
 
-        if (moveDirection == Vector2.zero)
-            return;
-        
-        float lookAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90;
-        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
+        return playerInRange && timeToAttack;
+    }
+
+    private IDamageable GetDamageableObject()
+    {
+        return Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayers).GetComponent<IDamageable>();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
+
+        Gizmos.color = Color.white;
+
+        Gizmos.DrawWireSphere(transform.position, stopDistance);
+
     }
 }

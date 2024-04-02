@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class EnemyGrunt : BaseEnemy
 {
@@ -11,20 +12,20 @@ public class EnemyGrunt : BaseEnemy
 
     private float timeSinceAttacked;
 
-    protected override void Update()
-    {
-        agent.SetDestination(player.position);
-        agent.updateUpAxis = false;
-        agent.updateRotation = false;
-
-        base.Update();
-
-        timeSinceAttacked += Time.deltaTime;
-    }
-
     private void Start()
     {
         agent.speed = speed;
+    }
+
+    protected override void Update()
+    {
+        agent.SetDestination(player.position);
+
+        base.Update(); 
+        
+        RotateInMoveDirection();
+
+        timeSinceAttacked += Time.deltaTime;
     }
 
     protected override void Attack(IDamageable damageable)
@@ -35,6 +36,15 @@ public class EnemyGrunt : BaseEnemy
 
     void RotateInMoveDirection()
     {
+        if (agent.velocity == Vector3.zero)
+            return;
+   
+        Vector2 moveDirection = new Vector2(agent.velocity.x, agent.velocity.y);
 
+        if (moveDirection == Vector2.zero)
+            return;
+        
+        float lookAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90;
+        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
     }
 }

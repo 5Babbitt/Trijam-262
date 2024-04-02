@@ -25,11 +25,3 @@ public class ElementEffector : MonoBehaviour
     }
 }
 
-public enum Elements
-{ 
-    none,
-    fire,
-    lightning,
-    slime
-}
-

@@ -22,20 +22,32 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
         agent = GetComponent<NavMeshAgent>();
         agent.updateUpAxis = false;
+        agent.updateRotation = false;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        RotateInMoveDirection();
     }
 
     protected virtual void Attack(IDamageable damageable)
     {
         damageable.Damage(damage);
+    }
 
+    protected virtual void TakeDamage(int _damage)
+    {
+        health -= _damage;
+
+        if (health <= 0)
+            Death();
     }
 
     public void Damage(int _damage)
     {
-        health -= _damage;
-        
-        if (health <= 0)
-            Death();
+        TakeDamage(_damage);
     }
 
     public void Death()
@@ -48,8 +60,6 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
     {
         switch (_element)
         {
-            case Elements.none:
-                break;
             case Elements.fire:
 
                 break;
@@ -60,5 +70,19 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
                 break;
         }
+    }
+
+    void RotateInMoveDirection()
+    {
+        if (agent.velocity == Vector3.zero)
+            return;
+
+        Vector2 moveDirection = new Vector2(agent.velocity.x, agent.velocity.y);
+
+        if (moveDirection == Vector2.zero)
+            return;
+
+        float lookAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90;
+        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
     }
 }

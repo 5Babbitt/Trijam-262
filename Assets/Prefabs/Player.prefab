@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
+  deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
 --- !u!114 &7905338170952530217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +203,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1390457828385992554}
-  cam: {fileID: 0}
   mousePos: {x: 0, y: 0}
   targetDirection: {x: 0, y: 0}
   targetDistance: 7
@@ -226,7 +226,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 1
+  m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}

@@ -55,6 +55,7 @@ public class PlayerCombat : BounceableBehaviour
         // Aiming
         rb.MoveRotation(lookAngle);
     }
+
     void CalculateAim()
     {
         Vector2 _mousePos = cam.ScreenToWorldPoint(mousePos);

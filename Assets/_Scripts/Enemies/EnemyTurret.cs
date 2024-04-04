@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// EnemyTurret
@@ -6,15 +7,15 @@ using UnityEngine;
 public class EnemyTurret : BaseEnemy
 {
     [Header("Turret Settings")]
-    public float attackCooldown;
+    
     public float projectileSpeed;
-    public int projectileDamage;
+   
     public int projectileHealth;
     public GameObject projectile;
     public Transform attackPoint;
     public LayerMask attackLayers;
 
-    private float timeSinceAttacked;
+    public Vector2 target;
 
     protected override void Awake()
     {
@@ -23,25 +24,45 @@ public class EnemyTurret : BaseEnemy
 
     void Start()
     {
+
     }
 
     protected override void Update()
     {
-        agent.SetDestination(player.transform.position);
-        
         base.Update();
 
-        if (CanAttack()) Fire();
+        target = player.transform.position;
+        LookAtTarget();
+
+        if (CanAttack()) Attack();
 
         timeSinceAttacked += Time.deltaTime;
     }
 
-    private void Fire()
+    protected override void WanderState()
     {
-        Vector2 targetDirection = player.transform.position - attackPoint.position;
+        // Randomly look around
+        // If player enters area of sight switch to chase state
+    }
+
+    protected override void ChaseState()
+    {
+        // Keep track of player position
+        // If player is in line of sight switch to attack state
+    }
+
+    protected override void AttackState()
+    {
+        // Attack the player
+        // If player exits line of sight switch to chase state
+    }
+
+    protected override void Attack()
+    {
+        Vector2 targetDirection = target - (Vector2)attackPoint.position;
 
         Projectile thisProjectile = Instantiate(projectile, attackPoint.position, Quaternion.identity).GetComponent<Projectile>();
-        thisProjectile.SetProjectileStats(targetDirection.normalized, projectileSpeed, projectileDamage, projectileHealth);
+        thisProjectile.SetProjectileStats(targetDirection.normalized, projectileSpeed, attackDamage, projectileHealth);
 
         timeSinceAttacked = 0;
     }
@@ -53,5 +74,12 @@ public class EnemyTurret : BaseEnemy
         bool timeToAttack = (timeSinceAttacked > attackCooldown);
 
         return playerInSight && timeToAttack;
+    }
+    void LookAtTarget()
+    {
+        Vector2 targetDirection = target - (Vector2)attackPoint.position;
+
+        float lookAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90;
+        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
     }
 }

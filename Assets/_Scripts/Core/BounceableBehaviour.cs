@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// BounceableBehaviour
+/// </summary>
 public class BounceableBehaviour : MonoBehaviour
 {
     protected Rigidbody2D rb;

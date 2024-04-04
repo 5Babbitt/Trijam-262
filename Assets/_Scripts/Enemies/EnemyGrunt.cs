@@ -1,22 +1,16 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// EnemyGrunt
 /// </summary>
-public class EnemyGrunt : BaseEnemy
+public class EnemyGrunt : MoveableEnemy
 {
     // Added State machine about 
 
     [Header("Grunt Settings")]
-    public float speed;
-    public float stopDistance;
     public float attackRadius;
-    public float attackCooldown;
     public Transform attackPoint;
     public LayerMask attackLayers;
-
-    private float timeSinceAttacked;
 
     private void Start()
     {
@@ -32,13 +26,31 @@ public class EnemyGrunt : BaseEnemy
 
         timeSinceAttacked += Time.deltaTime;
 
-        if (CanAttack()) Attack(GetDamageableObject());
+        if (CanAttack()) Attack();
     }
 
-    protected override void Attack(IDamageable damageable)
+    protected override void WanderState()
     {
-        damageable.Damage(damage);
-        timeSinceAttacked = 0;
+        // Randomly walk around
+        // If player enters area of sight switch to chase state
+    }
+
+    protected override void ChaseState()
+    {
+        // Keep track of and chase player
+        // If player is in attack range, switch to attack state
+    }
+
+    protected override void AttackState()
+    {
+        // Attack the player
+        // If player exits attack range, switch to chase state
+    }
+
+    protected override void Attack()
+    {
+        GetDamageableObject().Damage(attackDamage);
+        base.Attack();
     }
 
     private bool CanAttack()

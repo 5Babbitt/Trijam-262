@@ -1,40 +1,62 @@
 using FiveBabbittGames;
 using UnityEngine;
-using UnityEngine.AI;
 
 /// <summary>
 /// BaseEnemy
 /// </summary>
 public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 {
-    protected NavMeshAgent agent;
-
     [Header("Base Settings")]
+    public EnemyStates enemyState;
     public Transform player;
     public int health;
-    public int damage;
+
+    [Header("Base Attack Settings")] 
+    public float attackCooldown;
+    public int attackDamage;
+    protected float timeSinceAttacked;
 
     public GameEvent deathEvent;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        agent = GetComponent<NavMeshAgent>();
-        agent.updateUpAxis = false;
-        agent.updateRotation = false;
-    }
-
     protected override void Update()
     {
+        switch (enemyState)
+        {
+            case EnemyStates.Wander:
+                WanderState();
+                break;
+            case EnemyStates.Chase:
+                ChaseState();
+                break;
+            case EnemyStates.Attack:
+                AttackState();
+                break;
+        }
+
+
         base.Update();
 
-        RotateInMoveDirection();
+        timeSinceAttacked += Time.deltaTime;
     }
 
-    protected virtual void Attack(IDamageable damageable)
+    protected virtual void WanderState()
     {
-        damageable.Damage(damage);
+
+    }
+
+    protected virtual void ChaseState() 
+    { 
+    
+    }
+
+    protected virtual void AttackState() 
+    { 
+
+    }
+
+    protected virtual void Attack()
+    {
+        timeSinceAttacked = 0;
     }
 
     protected virtual void TakeDamage(int _damage)
@@ -56,7 +78,7 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
         Destroy(gameObject);
     }
 
-    public void TakeElementEffect(Elements _element)
+    public virtual void TakeElementEffect(Elements _element)
     {
         switch (_element)
         {
@@ -71,20 +93,17 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
             case Elements.slime:
 
                 break;
+            case Elements.wind:
+
+                break;
         }
     }
-
-    void RotateInMoveDirection()
-    {
-        if (agent.velocity == Vector3.zero)
-            return;
-
-        Vector2 moveDirection = new Vector2(agent.velocity.x, agent.velocity.y);
-
-        if (moveDirection == Vector2.zero)
-            return;
-
-        float lookAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90;
-        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
-    }
 }
+
+public enum EnemyStates
+{ 
+    Wander,
+    Chase,
+    Attack
+}
+

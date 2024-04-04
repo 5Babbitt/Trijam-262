@@ -55,7 +55,10 @@ public class Player : BounceableBehaviour, IDamageable, IElementEffectable
                 break;
             case Elements.slime:
 
-                break; 
+                break;
+            case Elements.wind:
+
+                break;
         }
     }
 }

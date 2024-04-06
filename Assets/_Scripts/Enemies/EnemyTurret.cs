@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class EnemyTurret : BaseEnemy
 {
     [Header("Turret Settings")]
-    
     public float projectileSpeed;
    
     public int projectileHealth;
@@ -17,6 +16,8 @@ public class EnemyTurret : BaseEnemy
 
     public Vector2 target;
 
+    bool playerInSight;
+
     protected override void Awake()
     {
         base.Awake();
@@ -24,14 +25,13 @@ public class EnemyTurret : BaseEnemy
 
     void Start()
     {
-
+        timeSinceAttacked = 0;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        target = player.transform.position;
         LookAtTarget();
 
         if (CanAttack()) Attack();
@@ -42,12 +42,23 @@ public class EnemyTurret : BaseEnemy
     protected override void WanderState()
     {
         // Randomly look around
+        searchTime += Time.deltaTime;
+        
+        if (searchTime > timePerSearch) 
+        {
+            Vector2 randomPosition = Random.insideUnitCircle * searchRadius;
+            target = randomPosition;
+        }
+
         // If player enters area of sight switch to chase state
+
     }
 
     protected override void ChaseState()
     {
         // Keep track of player position
+        target = player.transform.position;
+
         // If player is in line of sight switch to attack state
     }
 
@@ -59,10 +70,10 @@ public class EnemyTurret : BaseEnemy
 
     protected override void Attack()
     {
-        Vector2 targetDirection = target - (Vector2)attackPoint.position;
+        Vector2 targetDirection = (target - (Vector2)attackPoint.position).normalized;
 
         Projectile thisProjectile = Instantiate(projectile, attackPoint.position, Quaternion.identity).GetComponent<Projectile>();
-        thisProjectile.SetProjectileStats(targetDirection.normalized, projectileSpeed, attackDamage, projectileHealth);
+        thisProjectile.SetProjectileStats(targetDirection, projectileSpeed, attackDamage, projectileHealth);
 
         timeSinceAttacked = 0;
     }
@@ -70,16 +81,27 @@ public class EnemyTurret : BaseEnemy
     private bool CanAttack()
     {
         // Raycast to player and if anything in line of sight return false
-        bool playerInSight = Physics2D.Raycast(attackPoint.position, (player.position - attackPoint.position).normalized, attackLayers);
+        RaycastHit2D hit = Physics2D.Raycast(attackPoint.position, (player.position - attackPoint.position).normalized);
+
+        playerInSight = (hit.collider.tag == player.tag);
         bool timeToAttack = (timeSinceAttacked > attackCooldown);
 
         return playerInSight && timeToAttack;
     }
+
     void LookAtTarget()
     {
         Vector2 targetDirection = target - (Vector2)attackPoint.position;
 
         float lookAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90;
         transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (playerInSight) { Gizmos.color = Color.green; }
+        else { Gizmos.color = Color.red; }
+        
+        Gizmos.DrawLine(attackPoint.position, target);
     }
 }

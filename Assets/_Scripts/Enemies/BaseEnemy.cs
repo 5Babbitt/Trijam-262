@@ -7,16 +7,29 @@ using UnityEngine;
 public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 {
     [Header("Base Settings")]
-    public EnemyStates enemyState;
     public Transform player;
     public int health;
+
+    [Header("State Settings")]
+    public EnemyStates enemyState;
+    public float searchRadius;
+    public float timePerSearch;
+    protected float searchTime;
 
     [Header("Base Attack Settings")] 
     public float attackCooldown;
     public int attackDamage;
     protected float timeSinceAttacked;
 
+    [Header("Events")]
     public GameEvent deathEvent;
+
+    protected override void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        base.Awake();
+    }
 
     protected override void Update()
     {

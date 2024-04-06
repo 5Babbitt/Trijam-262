@@ -187,14 +187,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f95f29d9aebe404eb25ceb7770db229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyState: 0
   player: {fileID: 0}
   health: 75
-  damage: 13
+  attackCooldown: 0.6666667
+  attackDamage: 0
   deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
   speed: 2
   stopDistance: 1.5
   attackRadius: 0.5
-  attackCooldown: 0.6666667
   attackPoint: {fileID: 3288078723580469573}
   attackLayers:
     serializedVersion: 2

@@ -27,6 +27,23 @@ public class MoveableEnemy : BaseEnemy
         RotateInMoveDirection();
     }
 
+    protected override Vector2 GetRandomTarget()
+    {
+        var path = new NavMeshPath();
+        Vector2 _target = base.GetRandomTarget();
+        bool pathValid = false;
+
+        while (!pathValid)
+        {
+            _target = base.GetRandomTarget();
+
+            if (agent.CalculatePath(_target, path))
+                pathValid = true;
+        }
+
+        return _target;
+    }
+
     void RotateInMoveDirection()
     {
         if (agent.velocity == Vector3.zero)

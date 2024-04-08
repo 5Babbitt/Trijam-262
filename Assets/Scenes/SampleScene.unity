@@ -1304,20 +1304,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af81c84c775cc5449f8d676a8114163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyState: 0
   player: {fileID: 1046985630}
   health: 75
-  attackCooldown: 2
-  attackDamage: 10
-  deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
-  projectileSpeed: 15
-  projectileHealth: 10
-  projectile: {fileID: 4118731212642341583, guid: a195bc3b4d68c6a428b80006eee9d4ac, type: 3}
+  enemyState: 0
+  target: {x: 0, y: 0}
+  searchRadius: 10
+  timePerSearch: 7.5
   attackPoint: {fileID: 499036972}
   attackLayers:
     serializedVersion: 2
     m_Bits: 8
-  target: {x: 0, y: 0}
+  attackCooldown: 2
+  attackDamage: 10
+  deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
+  rotationSpeed: 0.01
+  projectileSpeed: 15
+  projectileHealth: 10
+  projectile: {fileID: 4118731212642341583, guid: a195bc3b4d68c6a428b80006eee9d4ac, type: 3}
 --- !u!1 &1696783717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1773,10 +1776,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1046985630}
-    - target: {fileID: 1389490764105434167, guid: 0efbacb0a7a21ce41bad126348bf8e66, type: 3}
-      propertyPath: attackDamage
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3750524260371549708, guid: 0efbacb0a7a21ce41bad126348bf8e66, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.59

@@ -12,11 +12,14 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     [Header("State Settings")]
     public EnemyStates enemyState;
+    public Vector2 target;
     public float searchRadius;
     public float timePerSearch;
     protected float searchTime;
 
-    [Header("Base Attack Settings")] 
+    [Header("Base Attack Settings")]
+    public Transform attackPoint;
+    public LayerMask attackLayers;
     public float attackCooldown;
     public int attackDamage;
     protected float timeSinceAttacked;
@@ -33,19 +36,16 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     protected override void Update()
     {
+        //State Machine
         switch (enemyState)
         {
             case EnemyStates.Wander:
                 WanderState();
                 break;
-            case EnemyStates.Chase:
-                ChaseState();
-                break;
             case EnemyStates.Attack:
                 AttackState();
                 break;
         }
-
 
         base.Update();
 
@@ -57,19 +57,21 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     }
 
-    protected virtual void ChaseState() 
-    { 
-    
-    }
-
-    protected virtual void AttackState() 
-    { 
-
+    protected virtual void AttackState()
+    {
+        
     }
 
     protected virtual void Attack()
     {
         timeSinceAttacked = 0;
+    }
+
+    protected virtual Vector2 GetRandomTarget()
+    {
+        Vector2 randomPosition = (Vector2)transform.position + (Random.insideUnitCircle * searchRadius);
+        
+        return randomPosition;
     }
 
     protected virtual void TakeDamage(int _damage)
@@ -111,12 +113,24 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
                 break;
         }
     }
+
+    [ContextMenu("Switch To Attack State")]
+    public virtual void SetAttackState()
+    {
+        enemyState = EnemyStates.Attack;
+    }
+
+    [ContextMenu("Switch To Wander State")]
+    public virtual void SetWanderState()
+    {
+        enemyState = EnemyStates.Wander;
+    }
+
 }
 
 public enum EnemyStates
 { 
     Wander,
-    Chase,
     Attack
 }
 

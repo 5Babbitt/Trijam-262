@@ -9,42 +9,40 @@ public class EnemyGrunt : MoveableEnemy
 
     [Header("Grunt Settings")]
     public float attackRadius;
-    public Transform attackPoint;
-    public LayerMask attackLayers;
 
     private void Start()
     {
         agent.speed = speed;
         agent.stoppingDistance = stopDistance;
+        SetWanderState();
     }
 
     protected override void Update()
     {
-        agent.SetDestination(player.position);
+        agent.SetDestination(target);
 
         base.Update(); 
 
         timeSinceAttacked += Time.deltaTime;
-
-        if (CanAttack()) Attack();
     }
 
     protected override void WanderState()
     {
         // Randomly walk around
-        // If player enters area of sight switch to chase state
-    }
 
-    protected override void ChaseState()
-    {
-        // Keep track of and chase player
-        // If player is in attack range, switch to attack state
+        // If player enters area of sight switch to chase state
+
     }
 
     protected override void AttackState()
     {
+        // Keep track of and chase player
+        target = player.position;
         // Attack the player
+        if (CanAttack()) Attack();
+
         // If player exits attack range, switch to chase state
+
     }
 
     protected override void Attack()
@@ -64,6 +62,18 @@ public class EnemyGrunt : MoveableEnemy
     private IDamageable GetDamageableObject()
     {
         return Physics2D.OverlapCircle(attackPoint.position, attackRadius, attackLayers).GetComponent<IDamageable>();
+    }
+
+    public override void SetAttackState()
+    {
+        base.SetAttackState();
+        agent.stoppingDistance = stopDistance;
+    }
+
+    public override void SetWanderState()
+    {
+        base.SetWanderState();
+        agent.stoppingDistance = 0;
     }
 
     private void OnDrawGizmos()

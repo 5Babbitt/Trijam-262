@@ -1,20 +1,15 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// EnemyTurret
 /// </summary>
-public class EnemyTurret : BaseEnemy
+public class EnemyTurret : StationaryEnemy
 {
     [Header("Turret Settings")]
     public float projectileSpeed;
    
     public int projectileHealth;
     public GameObject projectile;
-    public Transform attackPoint;
-    public LayerMask attackLayers;
-
-    public Vector2 target;
 
     bool playerInSight;
 
@@ -32,10 +27,6 @@ public class EnemyTurret : BaseEnemy
     {
         base.Update();
 
-        LookAtTarget();
-
-        if (CanAttack()) Attack();
-
         timeSinceAttacked += Time.deltaTime;
     }
 
@@ -46,26 +37,22 @@ public class EnemyTurret : BaseEnemy
         
         if (searchTime > timePerSearch) 
         {
-            Vector2 randomPosition = Random.insideUnitCircle * searchRadius;
-            target = randomPosition;
+            target = GetRandomTarget();
+            searchTime = 0;
         }
 
         // If player enters area of sight switch to chase state
 
     }
 
-    protected override void ChaseState()
+    protected override void AttackState()
     {
         // Keep track of player position
         target = player.transform.position;
-
-        // If player is in line of sight switch to attack state
-    }
-
-    protected override void AttackState()
-    {
         // Attack the player
+        if (CanAttack()) Attack();
         // If player exits line of sight switch to chase state
+
     }
 
     protected override void Attack()
@@ -89,13 +76,6 @@ public class EnemyTurret : BaseEnemy
         return playerInSight && timeToAttack;
     }
 
-    void LookAtTarget()
-    {
-        Vector2 targetDirection = target - (Vector2)attackPoint.position;
-
-        float lookAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90;
-        transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
-    }
 
     private void OnDrawGizmos()
     {

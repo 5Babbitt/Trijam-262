@@ -8,8 +8,8 @@ public class MoveableEnemy : BaseEnemy
 {
     [Header("Movement Settings")]
     protected NavMeshAgent agent;
-    public float speed;
-    public float stopDistance;
+    [SerializeField] protected float speed;
+    [SerializeField] protected float stopDistance;
 
     protected override void Awake()
     {

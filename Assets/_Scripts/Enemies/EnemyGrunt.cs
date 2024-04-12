@@ -10,8 +10,10 @@ public class EnemyGrunt : MoveableEnemy
     [Header("Grunt Settings")]
     public float attackRadius;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         agent.speed = speed;
         agent.stoppingDistance = stopDistance;
         SetWanderState();

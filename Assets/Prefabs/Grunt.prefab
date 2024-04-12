@@ -191,7 +191,6 @@ MonoBehaviour:
   health: 75
   enemyState: 0
   target: {x: 0, y: 0}
-  searchRadius: 0
   timePerSearch: 0
   attackPoint: {fileID: 3288078723580469573}
   attackLayers:
@@ -199,6 +198,14 @@ MonoBehaviour:
     m_Bits: 8
   attackCooldown: 0.6666667
   attackDamage: 1
+  viewRadius: 10
+  viewAngle: 60
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 128
   deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
   speed: 2
   stopDistance: 1.5

@@ -1284,7 +1284,7 @@ Transform:
   m_GameObject: {fileID: 1562705418}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.07, y: 7.63, z: 0}
+  m_LocalPosition: {x: -4.39, y: 13.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1308,7 +1308,6 @@ MonoBehaviour:
   health: 75
   enemyState: 0
   target: {x: 0, y: 0}
-  searchRadius: 10
   timePerSearch: 7.5
   attackPoint: {fileID: 499036972}
   attackLayers:
@@ -1316,8 +1315,16 @@ MonoBehaviour:
     m_Bits: 8
   attackCooldown: 2
   attackDamage: 10
+  viewRadius: 15
+  viewAngle: 60
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 128
   deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
-  rotationSpeed: 0.01
+  rotationSpeed: 60
   projectileSpeed: 15
   projectileHealth: 10
   projectile: {fileID: 4118731212642341583, guid: a195bc3b4d68c6a428b80006eee9d4ac, type: 3}

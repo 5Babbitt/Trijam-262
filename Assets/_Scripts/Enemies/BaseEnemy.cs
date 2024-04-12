@@ -1,5 +1,7 @@
+using System.Collections;
 using FiveBabbittGames;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// BaseEnemy
@@ -7,22 +9,28 @@ using UnityEngine;
 public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 {
     [Header("Base Settings")]
-    public Transform player;
-    public int health;
+    [SerializeField] protected Transform player;
+    [SerializeField] protected int health;
 
     [Header("State Settings")]
-    public EnemyStates enemyState;
-    public Vector2 target;
-    public float searchRadius;
-    public float timePerSearch;
+    [SerializeField] protected EnemyStates enemyState;
+    [SerializeField] protected Vector2 target;
+    [SerializeField] protected float timePerSearch;
     protected float searchTime;
 
     [Header("Base Attack Settings")]
-    public Transform attackPoint;
-    public LayerMask attackLayers;
-    public float attackCooldown;
-    public int attackDamage;
+    [SerializeField] protected Transform attackPoint;
+    [SerializeField] protected LayerMask attackLayers;
+    [SerializeField] protected float attackCooldown;
+    [SerializeField] protected int attackDamage;
     protected float timeSinceAttacked;
+
+    [Header("FOV Settings")]
+    [SerializeField] protected float viewRadius;
+    [SerializeField, Range(0, 360)] protected float viewAngle;
+    [SerializeField] protected LayerMask targetMask;
+    [SerializeField] protected LayerMask obstacleMask;
+    protected bool playerInView;
 
     [Header("Events")]
     public GameEvent deathEvent;
@@ -32,6 +40,11 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         base.Awake();
+    }
+
+    protected virtual void Start()
+    {
+        StartCoroutine(FOVCheck(0.2f));
     }
 
     protected override void Update()
@@ -69,7 +82,7 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     protected virtual Vector2 GetRandomTarget()
     {
-        Vector2 randomPosition = (Vector2)transform.position + (Random.insideUnitCircle * searchRadius);
+        Vector2 randomPosition = (Vector2)transform.position + (Random.insideUnitCircle * viewRadius);
         
         return randomPosition;
     }
@@ -126,6 +139,65 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
         enemyState = EnemyStates.Wander;
     }
 
+    // FOV Methods
+    IEnumerator FOVCheck(float delay)
+    {
+        while (enemyState == EnemyStates.Wander)
+        {
+            yield return new WaitForSeconds(delay);
+            FOV();
+        }
+    }
+
+    void FOV()
+    {
+        Collider2D[] targetsInRange = Physics2D.OverlapCircleAll(transform.position, viewRadius, targetMask);
+
+        if (targetsInRange.Length <= 0)
+            return;
+
+        Transform viewTarget = targetsInRange[0].transform;
+        Vector2 directionToTarget = (viewTarget.position - transform.position).normalized;
+
+        if (Vector2.Angle(transform.up, directionToTarget) < viewAngle / 2)
+        {
+            float distanceToTarget = Vector2.Distance(transform.position, viewTarget.position);
+            
+            if (!Physics2D.Raycast(transform.position, directionToTarget, distanceToTarget, obstacleMask))
+                playerInView = true; 
+            else
+                playerInView = false;
+        }
+        else
+            playerInView = false;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.white;
+        
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, viewRadius);
+
+        Vector3 leftAngle = DirectionFromAngle(-transform.eulerAngles.z, -viewAngle / 2);
+        Vector3 rightAngle = DirectionFromAngle(-transform.eulerAngles.z, viewAngle / 2);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + leftAngle * viewRadius);
+        Gizmos.DrawLine(transform.position, transform.position + rightAngle * viewRadius);
+
+        if (playerInView)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, player.transform.position);
+        }
+    }
+
+    Vector2 DirectionFromAngle(float eulerY, float angle)
+    {
+        angle += eulerY;
+
+        return new Vector2(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad));
+    }
 }
 
 public enum EnemyStates

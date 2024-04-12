@@ -18,8 +18,10 @@ public class EnemyTurret : StationaryEnemy
         base.Awake();
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         timeSinceAttacked = 0;
     }
 
@@ -51,8 +53,6 @@ public class EnemyTurret : StationaryEnemy
         target = player.transform.position;
         // Attack the player
         if (CanAttack()) Attack();
-        // If player exits line of sight switch to chase state
-
     }
 
     protected override void Attack()

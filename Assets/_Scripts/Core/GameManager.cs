@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
-    
-    
     protected override void Awake()
     {
         base.Awake();
@@ -34,5 +32,16 @@ public class GameManager : Singleton<GameManager>
         }
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    // Events
+    public void OnPlayerDeath(Component component, object data)
+    {
+        if (component is not Player)
+            return;
+            
+        // Trigger Game Over
+
+
     }
 }

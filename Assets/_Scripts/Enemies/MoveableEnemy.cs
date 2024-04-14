@@ -6,8 +6,9 @@ using UnityEngine.AI;
 /// </summary>
 public class MoveableEnemy : BaseEnemy
 {
-    [Header("Movement Settings")]
     protected NavMeshAgent agent;
+
+    [Header("Movement Settings")]
     [SerializeField] protected float speed;
     [SerializeField] protected float stopDistance;
 
@@ -56,5 +57,14 @@ public class MoveableEnemy : BaseEnemy
 
         float lookAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90;
         transform.rotation = Quaternion.AngleAxis(lookAngle, Vector3.forward);
+    }
+
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+
+        Gizmos.color = Color.white;
+        
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, stopDistance);
     }
 }

@@ -31,9 +31,11 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
     [SerializeField] protected LayerMask targetMask;
     [SerializeField] protected LayerMask obstacleMask;
     protected bool playerInView;
+    protected bool playerDetected;
 
     [Header("Events")]
     public GameEvent deathEvent;
+    public GameEvent playerDetectedEvent;
 
     protected override void Awake()
     {
@@ -67,7 +69,7 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
 
     protected virtual void WanderState()
     {
-
+        
     }
 
     protected virtual void AttackState()
@@ -98,6 +100,10 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
     public void Damage(int _damage)
     {
         TakeDamage(_damage);
+
+        if (enemyState != EnemyStates.Attack) return;
+
+        PlayerDetected();
     }
 
     public void Death()
@@ -139,10 +145,25 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
         enemyState = EnemyStates.Wander;
     }
 
+    protected virtual void PlayerDetected()
+    {
+        if (enemyState == EnemyStates.Attack) return;
+        
+        playerDetected = true;
+        playerDetectedEvent.Raise();
+        SetAttackState();
+    }
+
+    public void OnPlayerDetected(Component component, object data)
+    {
+        if (enemyState == EnemyStates.Attack) return;
+        SetAttackState();
+    }
+
     // FOV Methods
     IEnumerator FOVCheck(float delay)
     {
-        while (enemyState == EnemyStates.Wander)
+        while (true)
         {
             yield return new WaitForSeconds(delay);
             FOV();
@@ -164,7 +185,10 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
             float distanceToTarget = Vector2.Distance(transform.position, viewTarget.position);
             
             if (!Physics2D.Raycast(transform.position, directionToTarget, distanceToTarget, obstacleMask))
-                playerInView = true; 
+            {
+                playerInView = true;
+                PlayerDetected();
+            }
             else
                 playerInView = false;
         }
@@ -172,7 +196,14 @@ public class BaseEnemy : BounceableBehaviour, IDamageable, IElementEffectable
             playerInView = false;
     }
 
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+
+        Gizmos.DrawLine(transform.position, transform.position + (transform.up) * 2);
+    }
+
+    protected virtual void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
         
@@ -205,4 +236,3 @@ public enum EnemyStates
     Wander,
     Attack
 }
-

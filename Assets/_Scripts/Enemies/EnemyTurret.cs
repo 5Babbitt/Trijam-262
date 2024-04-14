@@ -11,8 +11,6 @@ public class EnemyTurret : StationaryEnemy
     public int projectileHealth;
     public GameObject projectile;
 
-    bool playerInSight;
-
     protected override void Awake()
     {
         base.Awake();
@@ -34,7 +32,7 @@ public class EnemyTurret : StationaryEnemy
 
     protected override void WanderState()
     {
-        // Randomly look around
+        // Randomly look around every few seconds
         searchTime += Time.deltaTime;
         
         if (searchTime > timePerSearch) 
@@ -43,8 +41,7 @@ public class EnemyTurret : StationaryEnemy
             searchTime = 0;
         }
 
-        // If player enters area of sight switch to chase state
-
+        base.WanderState();
     }
 
     protected override void AttackState()
@@ -70,16 +67,18 @@ public class EnemyTurret : StationaryEnemy
         // Raycast to player and if anything in line of sight return false
         RaycastHit2D hit = Physics2D.Raycast(attackPoint.position, (player.position - attackPoint.position).normalized);
 
-        playerInSight = (hit.collider.tag == player.tag);
+        bool playerInSight = (hit.collider.tag == player.tag && playerInView);
         bool timeToAttack = (timeSinceAttacked > attackCooldown);
 
         return playerInSight && timeToAttack;
     }
 
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmosSelected()
     {
-        if (playerInSight) { Gizmos.color = Color.green; }
+        base.OnDrawGizmosSelected();
+
+        if (playerInView) { Gizmos.color = Color.green; }
         else { Gizmos.color = Color.red; }
         
         Gizmos.DrawLine(attackPoint.position, target);

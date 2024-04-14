@@ -32,8 +32,8 @@ public class EnemyGrunt : MoveableEnemy
     {
         // Randomly walk around
 
-        // If player enters area of sight switch to chase state
 
+        base.WanderState();
     }
 
     protected override void AttackState()
@@ -42,9 +42,6 @@ public class EnemyGrunt : MoveableEnemy
         target = player.position;
         // Attack the player
         if (CanAttack()) Attack();
-
-        // If player exits attack range, switch to chase state
-
     }
 
     protected override void Attack()
@@ -78,15 +75,13 @@ public class EnemyGrunt : MoveableEnemy
         agent.stoppingDistance = 0;
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
+        
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
-
-        Gizmos.color = Color.white;
-
-        Gizmos.DrawWireSphere(transform.position, stopDistance);
 
     }
 }

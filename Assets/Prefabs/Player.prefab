@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  deathEvent: {fileID: 11400000, guid: 24f8b7f5b1a255a46aa57c5936e73d56, type: 2}
+  deathEvent: {fileID: 11400000, guid: 6f9f8fe068f68da40a452e4de9665b20, type: 2}
 --- !u!114 &7905338170952530217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,10 +183,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveInput: {x: 0, y: 0}
   moveVector: {x: 0, y: 0}
-  maxSpeed: 8
+  maxSpeed: 5
   acceleration: 4
   deceleration: 6
-  dashSpeed: 16
+  dashSpeed: 12
   maxConsecutiveDashes: 3
   dashTime: 0.3333333
   dashCooldown: 1.333333
@@ -210,7 +210,7 @@ MonoBehaviour:
   fireTransform: {fileID: 6470508203005069377}
   projectile: {fileID: 4118731212642341583, guid: a195bc3b4d68c6a428b80006eee9d4ac, type: 3}
   projectileSpeed: 20
-  projectileDamage: 10
+  projectileDamage: 5
   projectileHealth: 4
   fireCooldown: 0.25
 --- !u!50 &2530043532625326424
